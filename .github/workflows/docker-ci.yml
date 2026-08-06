@@ -24,4 +24,3 @@ jobs:
         docker run -d -p 5001:5000 --name ci-test-container bmw-telemetry:ci
         sleep 3
         curl -f http://localhost:5001/api/v1/telemetry
-EOF
