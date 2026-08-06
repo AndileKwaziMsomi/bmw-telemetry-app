@@ -1,4 +1,4 @@
-cat << 'EOF' > .github/workflows/docker-ci.yml
+
 name: BMW Telemetry Docker CI
 
 on:
