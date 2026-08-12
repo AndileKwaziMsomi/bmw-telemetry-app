@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BMW Vehicle Telemetry Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: #fff; text-align: center; }
+        .chart-container { width: 70%; margin: auto; padding-top: 30px; }
+    </style>
+</head>
+<body>
+    <h2>Live Vehicle Telemetry Stream</h2>
+    <div class="chart-container">
+        <canvas id="speedChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('speedChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [], datasets: [{ label: 'Speed (km/h)', borderColor: '#1E90FF', data: [] }] },
+            options: { scales: { y: { beginAtZero: true, max: 240 } } }
+        });
+
+        function fetchTelemetry() {
+            fetch('/api/v1/telemetry')
+                .then(res => res.json())
+                .then(data => {
+                    const time = new Date().toLocaleTimeString();
+                    if (chart.data.labels.length > 10) {
+                        chart.data.labels.shift();
+                        chart.data.datasets[0].data.shift();
+                    }
+                    chart.data.labels.push(time);
+                    chart.data.datasets[0].data.push(data.speed);
+                    chart.update();
+                });
+        }
+        setInterval(fetchTelemetry, 2000);
+    </script>
+</body>
+</html>

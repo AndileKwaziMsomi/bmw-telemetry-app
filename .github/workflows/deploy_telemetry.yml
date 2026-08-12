@@ -1,0 +1,18 @@
+---
+- name: Deploy BMW Telemetry Container to Linux Hosts
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure Docker service is running
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+
+    - name: Run Telemetry Container
+      community.docker.docker_container:
+        name: bmw-telemetry-service
+        image: bmw-telemetry-app:latest
+        state: started
+        restart_policy: always
+        published_ports:
+          - "5001:5001"
